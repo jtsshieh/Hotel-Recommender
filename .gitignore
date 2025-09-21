@@ -5,5 +5,5 @@ __pycache__/
 .vscode/
 .idea/
 
-data/raw/amadeus_hotels.csv
+data/raw/
 data/enriched/
