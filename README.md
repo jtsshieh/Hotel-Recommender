@@ -94,6 +94,6 @@ See example outputs in the examples folder
 3. Follow the prompts to select a locality and enter your hotel preferences.
 4. The script will output a ranked list of hotels with AI-generated scores and key review points.
 
-## Limiations
+## Limitations
 
 The free/trial tier of the Amadeus API is limited. It does not provide real-time data and only has a subset of the total data available. This means that if a free API key is inputted, less hotels will be matched and less hotels will have prices attached to them. 

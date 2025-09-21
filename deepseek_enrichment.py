@@ -1,3 +1,8 @@
+"""
+Deepseek Enrichment Module
+
+Enriches the data by using the deepseek AI API
+"""
 import json
 from openai import OpenAI
 import os
@@ -36,8 +41,10 @@ EXAMPLE JSON OUTPUT:
 """
 
 
-# This function sends a prompt to DeepSeek AI (via OpenAI API) to analyze reviews and return the top 10 hotels matching the user's query and are well rated.
 def find_best_hotels(hotel_samples, user_query, batch_size=20):
+    """
+    Prompts the deepseek AI to analyze and hotel reviews and return the top 10 matching the user's query
+    """
     try:
         res = []
         n = len(hotel_samples)

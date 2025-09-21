@@ -82,7 +82,9 @@ selected_region = (
 
 
 def get_iata_code(city, region):
-    # Try Amadeus API dynamic lookup using city/region only
+    """
+    Tries to get the IATA code for a city using the Amadeus API.
+    """
     try:
         country_code = "US" if region and len(region) == 2 else None
         params = {"keyword": city}
@@ -115,6 +117,7 @@ def get_iata_code(city, region):
 
 iata_code = get_iata_code(selected_locality, selected_region)
 
+# Attempt to load hotels from Amadeus API for the selected locality
 if not iata_code or len(iata_code) != 3:
     print(
         f"Could not determine a valid IATA code for {selected_locality} ({selected_region}). Skipping Amadeus hotel search."
@@ -148,8 +151,10 @@ hotels_df.to_csv("data/raw/amadeus_hotels.csv", index=False)
 print("Saved Amadeus hotel data to data/raw/amadeus_hotels.csv")
 
 
-# --- Fuzzy match offerings to Amadeus hotels ---
 def normalize(text):
+    """
+    Normalizes fields in data to try to fuzzy match
+    """
     if pd.isnull(text):
         return ""
     text = str(text).lower().strip()
@@ -260,6 +265,7 @@ if missing_cols:
         f"Warning: The following required columns are missing in reviews.csv: {missing_cols}. Review analysis will be limited."
     )
 
+# Build an array of hotel review records to send to LLM
 if not matched_hotels_df.empty and not reviews_df.empty:
     hotel_review_records = []
     for _, row in matched_hotels_df.iterrows():
@@ -281,7 +287,7 @@ if not matched_hotels_df.empty and not reviews_df.empty:
         hotel_review_records.append(
             {
                 "hotel_id": hotel_id,
-                "reviews": random.sample(review_objs, 10),
+                "reviews":  random.sample(review_objs, 10) if len(review_objs) > 10 else review_objs,
             }
         )
     print(f"\nCreated hotel_reviews_df with {len(hotel_review_records)} hotels.")
@@ -307,8 +313,10 @@ print("\nAnalyzing reviews with DeepSeek AI. This may take several moments...")
 top_hotels = find_best_hotels(hotel_review_records, user_query)
 
 
-# Sort by score and get top 10 hotels (descending)
 def get_score(h):
+    """
+    Sort by score and get top 10 hotels (descending)
+    """
     try:
         return float(h.get("score", 0))
     except Exception:
